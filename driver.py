@@ -10,26 +10,19 @@ class Driver():
 
     def processMotionData(self):
         while True:
-            c = self.f.read(1)
-            b2 = self.f.read(1)
-            b3 = self.f.read(1)
-            tmpx = ord(b2)  # from char to int
-            if tmpx > 128:
-                tmpx -= 255
-            self.x += tmpx
+            n = unpack('B', self.f.read(1))[0]
+            self.x += unpack('b', self.f.read(1))[0]
+            y = unpack('b', self.f.read(1))[0]
 
             # process button states:
-            n = ord(c)
-            button_state = [n & (1 << i) for i in xrange(8)]
-            i = iter(button_state)
-            leftbutton = i.next()
-            rightbutton = i.next()
-            threeb = i.next()
-            fourb = i.next()
-            left = i.next()
-            down = i.next()
-            sevenb = i.next()
-            eightb = i.next()
+            leftbutton = n & 0x1
+            rightbutton = n & 0x2
+            threeb = n & 0x4
+            fourb = n & 0x8
+            left = n & 0x10
+            down = n & 0x20 
+            sevenb = n & 0x40
+            eightb = n & 0x80
             if leftbutton > 0:
                 self.b1state = not self.b1state
                 logging.info("b1 pressed, new b1state=%d" % self.b1state)
