@@ -81,11 +81,9 @@ def processMotionData():
 t1 = threading.Thread(target=processMotionData)
 t1.daemon = True
 t1.start()
-i=0
 try:
-    while i<1000:
+    while True:
         time.sleep(keyDelay)
-        i+=1
         if abs(x) < boundary: continue
         try:
             keys1, keys2 = mykeys[b1state, b2state, b3state] 
