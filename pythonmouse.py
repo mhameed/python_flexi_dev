@@ -20,12 +20,12 @@ b3state=0
 mykeys = {}
 
 # verticalMotion, if 1 send left/right, else send up/down
-mykeys[0,0,0]=('Down', 'Up')
-mykeys[1,0,0]=('Right', 'Left')
+mykeys[0,0,0]=(['key Down'], ['key Up'])
+mykeys[1,0,0]=(['key Right'], ['key Left'])
 
 # vimMode, send hjkl instead of arrow keys.
-mykeys[0,0,1]=('j', 'k')
-mykeys[1,0,1]=('l', 'h')
+mykeys[0,0,1]=(['key j'], ['key k'])
+mykeys[1,0,1]=(['key l'], ['key h'])
 
 def processMouse():
     global x
@@ -80,13 +80,13 @@ try:
             continue
 
         if abs(x)<boundary: continue
-        key1, key2 = mykeys[b1state, b2state, b3state] 
+        keys1, keys2 = mykeys[b1state, b2state, b3state] 
         if x>0:
             #print "moved to the right"
-            xte['key %s' %key1]()
+            xte[tuple(keys1)]()
         else:
             print "moved to the left."
-            xte['key %s'%key2]()
+            xte[tuple(keys2)]()
         x = 0
         #y = 0
 except KeyboardInterrupt:
