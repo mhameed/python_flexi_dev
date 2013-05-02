@@ -1,9 +1,10 @@
 import threading
 from struct import unpack
 import time
+import plumbum
+from plumbum.cmd import xte
 
 running = 1
-actioned=0
 f = open('/dev/input/mice', 'rb')
 
 x=0
@@ -32,7 +33,7 @@ t1.start()
 i=0
 try:
     while i<1000:
-        time.sleep(5)
+        time.sleep(0.5)
         i+=1
         #print "i=%d, X=%d, Y=%d" % (i, x, y)
         if x == y:
@@ -40,14 +41,18 @@ try:
             continue
         if abs(x) > abs(y):
             if x>0:
-                print "moved to the right"
+                #print "moved to the right"
+                xte['key Right']()
             else:
                 print "moved to the left."
+                xte['key Left']()
         else:
             if y>0:
                 print "moved up."
+                xte['key Up']()
             else:
                 print "moved down."
+                xte['key Down']()
         x = 0
         y = 0
 except KeyboardInterrupt:
