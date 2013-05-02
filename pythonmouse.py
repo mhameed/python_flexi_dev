@@ -28,10 +28,12 @@ boundary=50
 # Which input device should be used.
 device = '/dev/input/mouse1'
 
+logfile='motion.log'
+loglevel=logging.INFO
 ### end of configuration area
 
-logging.basicConfig(filename='motion.log',
-    level=logging.DEBUG,
+logging.basicConfig(filename=logfile,
+    level=loglevel,
     format='%(asctime)s - %(levelname)s - %(message)s')
 
 x=0
