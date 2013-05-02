@@ -1,20 +1,11 @@
 import threading
 from struct import unpack
 import time
+import logging
 import plumbum
 from plumbum.cmd import xte
 
-running = 1
-f = open('/dev/input/mouse1', 'rb')
-
-boundary=50
-x=0
-#y=0
-
-b1state=0
-b2state=0
-b3state=0
-
+### Start configuration area:
 
 # dict of which keys to send at what event.
 mykeys = {}
@@ -27,24 +18,42 @@ mykeys[1,0,0]=(['key Right'], ['key Left'])
 mykeys[0,0,1]=(['key j'], ['key k'])
 mykeys[1,0,1]=(['key l'], ['key h'])
 
-def processMouse():
+
+# Minimum time that should pass before sending consecutive keys
+keyDelay=0.35
+
+# If new pointer location within boundary of x after keyDelay, then dont act, consider it as noise.
+boundary=50
+
+# Which input device should be used.
+device = '/dev/input/mouse1'
+
+### end of configuration area
+
+logging.basicConfig(filename='motion.log',
+    level=logging.DEBUG,
+    format='%(asctime)s - %(levelname)s - %(message)s')
+
+x=0
+b1state=0
+b2state=0
+b3state=0
+logging.info("motion driver: starting.")
+f = open(device, 'rb')
+
+def processMotionData():
     global x
-    #global y
     global b1state
     global b2state
     global b3state
-    while running:
+    while True:
         c = f.read(1)
         b2 = f.read(1)
         b3 = f.read(1)
         tmpx = ord(b2)  # from char to int
-        #tmpy = ord(b3)
         if tmpx > 128:
                 tmpx -= 255
-        #if tmpy > 128:
-        #        tmpy -= 255
         x += tmpx
-        #y += tmpy
 
         # process button states:
         n = ord(c)
@@ -59,40 +68,38 @@ def processMouse():
         sevenb = i.next()
         eightb = i.next()
         if leftbutton > 0:
-                print "LEFTBUTTON"
                 b1state = not b1state
+                logging.info("b1 pressed, new b1state=%d" % b1state)
         if rightbutton > 0:
-                print "RIGHTBUTTON"
                 b3state = not b3state
-
+                logging.info("b3 pressed, new b3state=%d" % b3state)
         time.sleep(0)
 
 
-t1 = threading.Thread(target=processMouse)
+t1 = threading.Thread(target=processMotionData)
 t1.daemon = True
 t1.start()
 i=0
 try:
     while i<1000:
-        time.sleep(0.35)
+        time.sleep(keyDelay)
         i+=1
-        if x == 0:
+        if abs(x) < boundary: continue
+        try:
+            keys1, keys2 = mykeys[b1state, b2state, b3state] 
+        except KeyError, ValueError:
+            logging.warning("No such state defined.")
             continue
 
-        if abs(x)<boundary: continue
-        keys1, keys2 = mykeys[b1state, b2state, b3state] 
         if x>0:
-            #print "moved to the right"
+            logging.debug("Rightward motion detected, submitting xte keys")
             xte[tuple(keys1)]()
         else:
-            print "moved to the left."
+            logging.debug("Leftward motion detected, submitting xte keys")
             xte[tuple(keys2)]()
         x = 0
-        #y = 0
 except KeyboardInterrupt:
     pass
 except Exception as err:
    raise 
-#running=False
-#t1.join()
-print "shutting down."
+logging.info("motion driver: shutting down.")
