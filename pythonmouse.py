@@ -9,6 +9,9 @@ f = open('/dev/input/mice', 'rb')
 
 x=0
 y=0
+sensativity=200
+# hasSensativity, if x is more sensative than y, then 0, else 1
+hasSensativity=1
 
 def processMouse():
     global x
@@ -27,19 +30,28 @@ def processMouse():
         y += tmpy
         time.sleep(0)
 
+
 t1 = threading.Thread(target=processMouse)
 t1.daemon = True
 t1.start()
 i=0
+additionalx = 0
+additionaly = 0
 try:
     while i<1000:
-        time.sleep(0.5)
+        time.sleep(0.3)
         i+=1
         #print "i=%d, X=%d, Y=%d" % (i, x, y)
         if x == y:
             #print "nothing to do."
             continue
-        if abs(x) > abs(y):
+        if hasSensativity:
+            additionaly=sensativity
+        else:
+            additionalx=sensativity
+        if abs(x)+additionalx > abs(y)+additionaly:
+            hasSensativity=0
+
             if x>0:
                 #print "moved to the right"
                 xte['key Right']()
@@ -47,6 +59,7 @@ try:
                 print "moved to the left."
                 xte['key Left']()
         else:
+            hasSensativity=1
             if y>0:
                 print "moved up."
                 xte['key Up']()
@@ -55,6 +68,8 @@ try:
                 xte['key Down']()
         x = 0
         y = 0
+        additionalx=0
+        additionaly=0
 except KeyboardInterrupt:
     pass
 except Exception as err:
