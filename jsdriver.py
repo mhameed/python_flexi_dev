@@ -5,30 +5,26 @@ import logging
 import plumbum
 from plumbum.cmd import xte
 
+# possible types: taken from joystick.h
+JS_EVENT_BUTTON = 0x01    # button pressed/released
+JS_EVENT_AXIS = 0x02    # joystick moved
+JS_EVENT_INIT = 0x80    # initial state of device
+
 class Driver():
 
 
     def processMotionData(self):
         while True:
-            n = unpack('B', self.f.read(1))[0]
-            self.x += unpack('b', self.f.read(1))[0]
-            y = unpack('b', self.f.read(1))[0]
+            etime = unpack('I', self.f.read(4))[0]
+            evalue = unpack('h', self.f.read(2))[0]
+            etype = unpack('B', self.f.read(1))[0]
+            enumber = unpack('B', self.f.read(1))[0]
 
-            # process button states:
-            leftbutton = n & 0x1
-            rightbutton = n & 0x2
-            threeb = n & 0x4
-            fourb = n & 0x8
-            left = n & 0x10
-            down = n & 0x20 
-            sevenb = n & 0x40
-            eightb = n & 0x80
-            if leftbutton > 0:
-                self.b1state = not self.b1state
-                logging.info("b1 pressed, new b1state=%d" % self.b1state)
-            if rightbutton > 0:
-                self.b3state = not self.b3state
-                logging.info("b3 pressed, new b3state=%d" % self.b3state)
+            if etype & JS_EVENT_INIT: continue
+            if etype & JS_EVENT_BUTTON:
+                print("btn%x, v=%i" % (enumber,evalue))
+            if etype & JS_EVENT_AXIS:
+                print("axis%x, v=%i" % (enumber,evalue))
             time.sleep(0)
 
     def __init__(self, keymap, device, boundary=50, keyDelay=0.35, logfile='motion.log', loglevel=logging.WARNING):
