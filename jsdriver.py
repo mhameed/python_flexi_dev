@@ -12,9 +12,10 @@ JS_EVENT_INIT = 0x80    # initial state of device
 
 class Driver(threading.Thread):
 
-    def __init__(self, device='/dev/input/js0', logfile='motion.log', loglevel=logging.WARNING, *args, **kwargs):
+    def __init__(self, device='/dev/input/js0', methodprefix='js_', logfile='motion.log', loglevel=logging.WARNING, *args, **kwargs):
         super(Driver, self).__init__(*args, **kwargs)
         self.device = device
+        self.methodprefix = methodprefix
         self._stop = threading.Event()
         logging.basicConfig(filename=logfile,
             level=loglevel,
@@ -40,7 +41,7 @@ class Driver(threading.Thread):
             if etype & JS_EVENT_AXIS:
                 mname = 'axis%d'
             if not mname: continue
-            mname=mname %enumber
+            mname=self.methodprefix + mname % enumber
             try:
                 method = self.__getattribute__(mname)
             except AttributeError:
