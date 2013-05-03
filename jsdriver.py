@@ -12,7 +12,7 @@ JS_EVENT_INIT = 0x80    # initial state of device
 
 class Driver(threading.Thread):
 
-    def __init__(self, device, logfile='motion.log', loglevel=logging.WARNING, *args, **kwargs):
+    def __init__(self, device='/dev/input/js0', logfile='motion.log', loglevel=logging.WARNING, *args, **kwargs):
         super(Driver, self).__init__(*args, **kwargs)
         self.device = device
         self._stop = threading.Event()
