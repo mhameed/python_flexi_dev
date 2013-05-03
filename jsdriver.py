@@ -10,7 +10,8 @@ JS_EVENT_BUTTON = 0x01    # button pressed/released
 JS_EVENT_AXIS = 0x02    # joystick moved
 JS_EVENT_INIT = 0x80    # initial state of device
 
-class Driver():
+class Driver(object):
+
 
 
     def processMotionData(self):
@@ -20,11 +21,20 @@ class Driver():
             etype = unpack('B', self.f.read(1))[0]
             enumber = unpack('B', self.f.read(1))[0]
 
+            mname = ''
             if etype & JS_EVENT_INIT: continue
             if etype & JS_EVENT_BUTTON:
-                print("btn%x, v=%i" % (enumber,evalue))
+                mname = 'btn%d' 
             if etype & JS_EVENT_AXIS:
-                print("axis%x, v=%i" % (enumber,evalue))
+                mname = 'axis%d'
+            if not mname: continue
+            mname=mname %enumber
+            try:
+                method = self.__getattribute__(mname)
+            except AttributeError:
+                logging.warning('method for %s not implemented.'%mname)
+                continue
+            method(evalue)
             time.sleep(0)
 
     def __init__(self, keymap, device, boundary=50, keyDelay=0.35, logfile='motion.log', loglevel=logging.WARNING):
@@ -51,23 +61,10 @@ class Driver():
         try:
             while True:
                 time.sleep(self.keyDelay)
-                if abs(self.x) < self.boundary: continue
-                try:
-                    keys1, keys2 = self.keymap[self.b1state, self.b2state, self.b3state] 
-                except KeyError, ValueError:
-                    logging.warning("No such state defined.")
-                    continue
 
-                if self.x>0:
-                    logging.debug("Rightward motion detected, submitting xte keys")
-                    xte[tuple(keys1)]()
-                else:
-                    logging.debug("Leftward motion detected, submitting xte keys")
-                    xte[tuple(keys2)]()
-                self.x = 0
         except KeyboardInterrupt:
             pass
         except Exception as err:
             raise 
-        self.f.close()
+        #self.f.close()
         logging.info("motion driver: shutting down.")
