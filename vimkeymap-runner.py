@@ -2,10 +2,10 @@ import time
 from vimkeymap import VimKeymap
 
 d = VimKeymap()
+d.start()
 try:
-    d.start()
-    time.sleep(120)
+    while True:
+        time.sleep(0.5)
 except KeyboardInterrupt:
-    pass
-d.stop()
-d.join()
+    d.stop()
+    d.join()
