@@ -9,7 +9,7 @@ class MetaDriver(threading.Thread):
         self.device = device
         self.methodprefix = methodprefix
         self._stop = threading.Event()
-        self.__logger = logging.getLogger('motion.MetaDriver')
+        self.logger = self.__logger = logging.getLogger('motion.MetaDriver')
 
     def stop(self):
         self.__logger.info('Setting stop flag.')
@@ -17,6 +17,9 @@ class MetaDriver(threading.Thread):
 
     def dispatcher(self):
         pass
+
+    def defaultAction(self, mname, label, value):
+            self.logger.warning('%s not implemented (%s, %s).' % (mname, label, value))
 
     def run(self):
         self.__logger.info("Starting to listen to %s ..." % self.device)

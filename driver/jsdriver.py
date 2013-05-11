@@ -13,7 +13,7 @@ class JSDriver(MetaDriver):
 
     def __init__(self, device='/dev/input/js0', methodprefix='js_', *args, **kwargs):
         super(JSDriver, self).__init__(device=device, methodprefix=methodprefix, *args, **kwargs)
-        self.__logger = logging.getLogger('motion.JSDriver')
+        self.logger = self.__logger = logging.getLogger('motion.JSDriver')
 
     def dispatcher(self):
         etime = unpack('I', self.f.read(4))[0]
@@ -32,7 +32,7 @@ class JSDriver(MetaDriver):
         try:
             method = self.__getattribute__(mname)
         except AttributeError:
-            self.__logger.warning('method for %s not implemented.'%mname)
+            self.defaultAction(mname, enumber, evalue)
             return
         method(evalue)
 
