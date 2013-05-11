@@ -19,7 +19,7 @@ class MetaDriver(threading.Thread):
         pass
 
     def run(self):
-        self.__logger.info("Starting...")
+        self.__logger.info("Starting to listen to %s ..." % self.device)
         self.f = open(self.device, 'rb')
         while not self._stop.isSet():
             self.dispatcher()
