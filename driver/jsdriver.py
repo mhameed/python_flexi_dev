@@ -9,10 +9,10 @@ JS_EVENT_BUTTON = 0x01    # button pressed/released
 JS_EVENT_AXIS = 0x02    # joystick moved
 JS_EVENT_INIT = 0x80    # initial state of device
 
-class Driver(MetaDriver):
+class JSDriver(MetaDriver):
 
     def __init__(self, device='/dev/input/js0', methodprefix='js_', *args, **kwargs):
-        super(Driver, self).__init__(device=device, methodprefix=methodprefix, *args, **kwargs)
+        super(JSDriver, self).__init__(device=device, methodprefix=methodprefix, *args, **kwargs)
         self.__logger = logging.getLogger('motion.JSDriver')
 
     def dispatcher(self):
