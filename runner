@@ -1,11 +1,14 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import sys
 import time
 import logging
+sys.path.append('driver')
+sys.path.append('mappings')
+
 import importlib
 
 if len(sys.argv) != 2:
-    print "usage."
+    print("usage.")
     sys.exit(1)
 
 mod = importlib.import_module(sys.argv[1])
