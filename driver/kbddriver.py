@@ -8,18 +8,14 @@ class KBDDriver(MetaDriver):
         super(KBDDriver, self).__init__(device=device, methodprefix=methodprefix, *args, **kwargs)
         self.logger = self.__logger = logging.getLogger('motion.KBDDriver')
 
-    async def dispatcher(self):
+    async def readFromDevice(self):
         etime = await self.f.read(16)
         etype = unpack('H', await self.f.read(2))[0]
         ecode = unpack('H', await self.f.read(2))[0]
         evalue = unpack('I', await self.f.read(4))[0]
-        if etype != 1: return
+        if etype != 1:
+            return ('', {'etype':etype, 'ecode':ecode, 'evalue':evalue})
 
-        mname=self.methodprefix + 'btn%d' % ecode
-        try:
-            method = self.__getattribute__(mname)
-        except AttributeError:
-            await self.defaultAction(mname, ecode, evalue)
-            return
-        await method(evalue)
+        mname = self.methodprefix + 'btn%d' % ecode
+        return (mname, {'etype':etype, 'ecode':ecode, 'evalue':evalue})
 
