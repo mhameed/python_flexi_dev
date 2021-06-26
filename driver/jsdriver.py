@@ -15,11 +15,11 @@ class JSDriver(MetaDriver):
         super(JSDriver, self).__init__(device=device, methodprefix=methodprefix, *args, **kwargs)
         self.logger = self.__logger = logging.getLogger('motion.JSDriver')
 
-    def dispatcher(self):
-        etime = unpack('I', self.f.read(4))[0]
-        evalue = unpack('h', self.f.read(2))[0]
-        etype = unpack('B', self.f.read(1))[0]
-        enumber = unpack('B', self.f.read(1))[0]
+    async def dispatcher(self):
+        etime = unpack('I', await self.f.read(4))[0]
+        evalue = unpack('h', await self.f.read(2))[0]
+        etype = unpack('B', await self.f.read(1))[0]
+        enumber = unpack('B', await self.f.read(1))[0]
 
         mname = ''
         if etype & JS_EVENT_INIT: return
@@ -28,11 +28,10 @@ class JSDriver(MetaDriver):
         if etype & JS_EVENT_AXIS:
             mname = 'axis%d'
         if not mname: return
-        mname=self.methodprefix + mname % enumber
+        mname = self.methodprefix + mname % enumber
         try:
             method = self.__getattribute__(mname)
         except AttributeError:
-            self.defaultAction(mname, enumber, evalue)
+            await self.defaultAction(mname, enumber, evalue)
             return
-        method(evalue)
-
+        await method(evalue)

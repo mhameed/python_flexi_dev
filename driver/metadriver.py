@@ -1,31 +1,25 @@
-import time
-import threading
+import trio
 import logging
 
-class MetaDriver(threading.Thread):
+class MetaDriver():
 
     def __init__(self, device=None, methodprefix=None, logfile='motion.log', loglevel=logging.WARNING, *args, **kwargs):
         super(MetaDriver, self).__init__(*args, **kwargs)
         self.device = device
         self.methodprefix = methodprefix
-        self._stop = threading.Event()
         self.logger = self.__logger = logging.getLogger('motion.MetaDriver')
+        self.stop = False
 
-    def stop(self):
-        self.__logger.info('Setting stop flag.')
-        self._stop.set()
-
-    def dispatcher(self):
+    async def dispatcher(self):
         pass
 
     def defaultAction(self, mname, label, value):
             self.logger.warning('%s not implemented (%s, %s).' % (mname, label, value))
 
-    def run(self):
+    async def run(self):
         self.__logger.info("Starting to listen to %s ..." % self.device)
-        self.f = open(self.device, 'rb')
-        while not self._stop.isSet():
-            self.dispatcher()
-            time.sleep(0)
-        self.f.close()
+        self.f = await trio.open_file(self.device, 'rb')
+        while not self.stop:
+            await self.dispatcher()
+        await self.f.close()
         self.__logger.info("Shutting down.")
