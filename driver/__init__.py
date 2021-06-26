@@ -1,2 +1,2 @@
-from jsdriver import JSDriver
-from kbddriver import KBDDriver
+from eventdriver import EventDriver
+from joystickdriver import JoystickDriver

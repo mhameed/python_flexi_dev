@@ -2,11 +2,11 @@ from struct import unpack
 from metadriver import MetaDriver
 import logging
 
-class KBDDriver(MetaDriver):
+class EventDriver(MetaDriver):
 
     def __init__(self, device='/dev/input/event10', methodprefix='kbd_', *args, **kwargs):
-        super(KBDDriver, self).__init__(device=device, methodprefix=methodprefix, *args, **kwargs)
-        self.logger = self.__logger = logging.getLogger('motion.KBDDriver')
+        super(EventDriver, self).__init__(device=device, methodprefix=methodprefix, *args, **kwargs)
+        self.logger = self.__logger = logging.getLogger('motion.EventDriver')
 
     async def readFromDevice(self):
         etime = await self.f.read(16)

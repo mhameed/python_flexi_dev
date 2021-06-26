@@ -1,6 +1,4 @@
 from struct import unpack
-import plumbum
-from plumbum.cmd import xte
 from metadriver import MetaDriver
 import logging
 
@@ -9,11 +7,11 @@ JS_EVENT_BUTTON = 0x01    # button pressed/released
 JS_EVENT_AXIS = 0x02    # joystick moved
 JS_EVENT_INIT = 0x80    # initial state of device
 
-class JSDriver(MetaDriver):
+class JoystickDriver(MetaDriver):
 
     def __init__(self, device='/dev/input/js0', methodprefix='js_', *args, **kwargs):
-        super(JSDriver, self).__init__(device=device, methodprefix=methodprefix, *args, **kwargs)
-        self.logger = self.__logger = logging.getLogger('motion.JSDriver')
+        super(JoystickDriver, self).__init__(device=device, methodprefix=methodprefix, *args, **kwargs)
+        self.logger = self.__logger = logging.getLogger('motion.JoystickDriver')
 
     async def readFromDevice(self):
         etime = unpack('I', await self.f.read(4))[0]
