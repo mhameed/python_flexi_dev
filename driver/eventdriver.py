@@ -13,7 +13,7 @@ class EventDriver(MetaDriver):
         etype = unpack('H', await self.f.read(2))[0]
         ecode = unpack('H', await self.f.read(2))[0]
         evalue = unpack('I', await self.f.read(4))[0]
-        if etype != 1:
+        if etype not in [1,2,3]:
             return ('', {'etype':etype, 'ecode':ecode, 'evalue':evalue})
 
         mname = self.methodprefix + 'btn%d' % ecode
