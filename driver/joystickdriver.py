@@ -11,7 +11,7 @@ class JoystickDriver(MetaDriver):
 
     def __init__(self, device, methodprefix='js_', *args, **kwargs):
         super(JoystickDriver, self).__init__(device=device, methodprefix=methodprefix, *args, **kwargs)
-        self.logger = self.__logger = logging.getLogger('motion.JoystickDriver')
+        self.logger = logging.getLogger('flexi_dev.JoystickDriver')
 
     async def readFromDevice(self):
         etime = unpack('I', await self.f.read(4))[0]

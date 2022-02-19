@@ -7,7 +7,7 @@ class MetaDriver():
         super(MetaDriver, self).__init__(*args, **kwargs)
         self.device = device
         self.methodprefix = methodprefix
-        self.logger = self.__logger = logging.getLogger('motion.MetaDriver')
+        self.logger = logging.getLogger('flexi_dev.MetaDriver')
         self.stop = False
 
     async def defaultAction(self, **kwargs):
@@ -15,7 +15,7 @@ class MetaDriver():
         self.logger.debug(f'defaultAction: {s}')
 
     async def run(self):
-        self.__logger.info("Starting to listen to %s ..." % self.device)
+        self.logger.info("Starting to listen to %s ..." % self.device)
         self.f = await trio.open_file(self.device, 'rb')
         while not self.stop:
             mname, kwargs = await self.readFromDevice()
@@ -26,4 +26,4 @@ class MetaDriver():
                 continue
             await method(**kwargs)
         await self.f.close()
-        self.__logger.info("Shutting down.")
+        self.logger.info("Shutting down.")

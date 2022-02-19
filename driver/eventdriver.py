@@ -6,7 +6,7 @@ class EventDriver(MetaDriver):
 
     def __init__(self, device, methodprefix='e_', *args, **kwargs):
         super(EventDriver, self).__init__(device=device, methodprefix=methodprefix, *args, **kwargs)
-        self.logger = self.__logger = logging.getLogger('motion.EventDriver')
+        self.logger = logging.getLogger('flexi_dev.EventDriver')
 
     async def readFromDevice(self):
         etime = await self.f.read(16)

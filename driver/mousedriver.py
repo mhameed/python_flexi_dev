@@ -15,7 +15,7 @@ class MouseDriver(MetaDriver):
 
     def __init__(self, device, methodprefix='ms_', *args, **kwargs):
         super(MouseDriver, self).__init__(device=device, methodprefix=methodprefix, *args, **kwargs)
-        self.logger = self.__logger = logging.getLogger('motion.MouseDriver')
+        self.logger = logging.getLogger('flexi_dev.MouseDriver')
 
     async def readFromDevice(self):
         n = unpack('B', await self.f.read(1))[0]
