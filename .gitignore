@@ -1,4 +1,6 @@
+dist/
 *.pyc
 *~
 *.log
 .venv
+*.egg-info
