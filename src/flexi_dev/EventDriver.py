@@ -1,6 +1,6 @@
-from struct import unpack
-from metadriver import MetaDriver
 import logging
+from struct import unpack
+from .MetaDriver import MetaDriver
 
 class EventDriver(MetaDriver):
 

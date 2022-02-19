@@ -1,6 +1,6 @@
-from struct import unpack
-from metadriver import MetaDriver
 import logging
+from struct import unpack
+from .MetaDriver import MetaDriver
 
 MOUSE_EVENT_LEFT_BUTTON = 0x1
 MOUSE_EVENT_RIGHT_BUTTON = 0x2
