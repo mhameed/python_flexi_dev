@@ -4,7 +4,7 @@ import logging
 
 class EventDriver(MetaDriver):
 
-    def __init__(self, device='/dev/input/event10', methodprefix='kbd_', *args, **kwargs):
+    def __init__(self, device, methodprefix='e_', *args, **kwargs):
         super(EventDriver, self).__init__(device=device, methodprefix=methodprefix, *args, **kwargs)
         self.logger = self.__logger = logging.getLogger('motion.EventDriver')
 

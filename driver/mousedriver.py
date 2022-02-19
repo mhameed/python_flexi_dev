@@ -13,7 +13,7 @@ MOUSE_EVENT_EIGHTH_BUTTON = 0x80
 
 class MouseDriver(MetaDriver):
 
-    def __init__(self, device='/dev/input/mouse2', methodprefix='ms_', *args, **kwargs):
+    def __init__(self, device, methodprefix='ms_', *args, **kwargs):
         super(MouseDriver, self).__init__(device=device, methodprefix=methodprefix, *args, **kwargs)
         self.logger = self.__logger = logging.getLogger('motion.MouseDriver')
 

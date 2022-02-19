@@ -9,7 +9,7 @@ JS_EVENT_INIT = 0x80    # initial state of device
 
 class JoystickDriver(MetaDriver):
 
-    def __init__(self, device='/dev/input/js0', methodprefix='js_', *args, **kwargs):
+    def __init__(self, device, methodprefix='js_', *args, **kwargs):
         super(JoystickDriver, self).__init__(device=device, methodprefix=methodprefix, *args, **kwargs)
         self.logger = self.__logger = logging.getLogger('motion.JoystickDriver')
 

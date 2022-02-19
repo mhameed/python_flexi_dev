@@ -3,7 +3,7 @@ import logging
 
 class MetaDriver():
 
-    def __init__(self, device=None, methodprefix=None, logfile='motion.log', loglevel=logging.WARNING, *args, **kwargs):
+    def __init__(self, device, methodprefix, *args, **kwargs):
         super(MetaDriver, self).__init__(*args, **kwargs)
         self.device = device
         self.methodprefix = methodprefix
