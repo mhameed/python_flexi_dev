@@ -25,5 +25,5 @@ class MetaDriver():
                 await self.defaultAction(mname=mname, **kwargs)
                 continue
             await method(**kwargs)
-        await self.f.close()
+        await self.f.aclose()
         self.logger.info("Shutting down.")

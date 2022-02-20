@@ -1,6 +1,6 @@
 import logging
 from struct import unpack
-from .MetaDriver import MetaDriver
+from .metadriver import MetaDriver
 
 # possible types: taken from joystick.h
 JS_EVENT_BUTTON = 0x01    # button pressed/released
