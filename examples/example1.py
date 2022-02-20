@@ -2,18 +2,22 @@
 import logging
 import sys
 import trio
-from flexi_dev.MouseDriver import MouseDriver
+import flexi_dev.mousedriver as msd
 
-class MickeyMouse(MouseDriver):
+class MickeyMouse(msd.MouseDriver):
     def __init__(self, device, *args, **kwargs):
         super(MickeyMouse, self).__init__(device=device, *args, **kwargs)
 
-    async def ms_btn9(self, **kwargs):
-        print("left button pressed")
-
-    async def ms_btn10(self, **kwargs):
-        print("right button pressed, quitting...")
-        sys.exit() 
+    async def defaultAction(self, **kwargs):
+        await super().defaultAction(**kwargs)
+        n = kwargs.get('n')
+        if n & msd.MOUSE_EVENT_LEFT_BUTTON:
+            print("left button pressed")
+        if n & msd.MOUSE_EVENT_RIGHT_BUTTON:
+            print("right button pressed")
+        if n & msd.MOUSE_EVENT_THIRD_BUTTON:
+            print("middle button pressed, quitting.")
+            self.stop = True
 
 logger = logging.getLogger('flexi_dev')
 logger.setLevel(logging.DEBUG)
